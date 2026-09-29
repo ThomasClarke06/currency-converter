@@ -1,0 +1,125 @@
+:root {
+  --text: #1f2328;
+  --text-muted: #59636e;
+  --bg: #f6f8fa;
+  --surface: #fff;
+  --border: #d1d9e0;
+  --accent: #0969da;
+  --error: #d1242f;
+
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  line-height: 1.5;
+  color: var(--text);
+  background-color: var(--bg);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+}
+
+.app {
+  max-width: 560px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+.app h1 {
+  font-size: 1.5rem;
+  margin: 0 0 1.5rem;
+}
+
+.converter {
+  display: grid;
+  gap: 1rem;
+  padding: 1.5rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+
+.converter__currencies {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: end;
+  gap: 0.5rem;
+}
+
+.field {
+  display: grid;
+  gap: 0.25rem;
+  min-width: 0;
+}
+
+.field label {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+}
+
+.field input,
+.field select {
+  width: 100%;
+  padding: 0.6rem 0.75rem;
+  font: inherit;
+  color: inherit;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+
+.field input {
+  font-size: 1.25rem;
+}
+
+.converter__swap {
+  padding: 0.6rem 0.75rem;
+  font: inherit;
+  font-size: 1.1rem;
+  color: var(--accent);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.converter__swap:hover {
+  background: var(--bg);
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.result {
+  display: grid;
+  margin: 0;
+  min-height: 4rem;
+  color: var(--text-muted);
+}
+
+.result__to {
+  font-size: 2rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.result--error {
+  color: var(--error);
+}
+
+@media (max-width: 480px) {
+  .converter__currencies {
+    grid-template-columns: 1fr;
+  }
+
+  .converter__swap {
+    justify-self: center;
+    transform: rotate(90deg);
+  }
+}
