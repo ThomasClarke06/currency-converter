@@ -28,7 +28,7 @@ src/
 ## Notes
 
 - Currencies use `short_code` (e.g. `GBP`), as that's what `/convert` expects. Results use `response.value`.
-- CurrencyBeacon doesn't support CORS, so requests go through the Vite dev server proxy (`vite.config.js`).
+- CurrencyBeacon doesn't support CORS, so requests go through the Vite dev server proxy (`vite.config.ts`).
 - The API key is visible in the browser. Fine for a demo, but production would need a backend proxy.
 - The amount is debounced so the API isn't called on every keystroke.
 - Defaults to converting 1 GBP to USD.
