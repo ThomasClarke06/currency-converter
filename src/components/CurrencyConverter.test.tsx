@@ -13,7 +13,7 @@ it('converts the entered amount', async () => {
   vi.mocked(convertCurrency).mockResolvedValue(26.44);
 
   render(<CurrencyConverter />);
-  fireEvent.change(screen.getByLabelText('Amount'), { target: { value: '20' } });
+    fireEvent.change(screen.getByLabelText('Amount in GBP'), { target: { value: '20' } });
 
   expect(await screen.findByText('26.44 USD')).toBeTruthy();
   expect(convertCurrency).toHaveBeenLastCalledWith({ from: 'GBP', to: 'USD', amount: 20 });

@@ -9,17 +9,28 @@ import ConversionResult from './ConversionResult';
 const DEFAULT_FROM = 'GBP';
 const DEFAULT_TO = 'USD';
 const DEBOUNCE_MS = 400;
+type Side = 'from' | 'to';
 
 function CurrencyConverter() {
-  const [amount, setAmount] = useState('1');
+  const [input, setInput] = useState<{ amount: string; side: Side }>({ amount: '1', side: 'from' });
   const [from, setFrom] = useState(DEFAULT_FROM);
   const [to, setTo] = useState(DEFAULT_TO);
 
   const { currencies, isLoading: currenciesLoading, error: currenciesError } = useCurrencies();
 
-  const debouncedAmount = useDebouncedValue(amount, DEBOUNCE_MS);
-  const conversion = useConversion({ from, to, amount: Number(debouncedAmount) });
-  const isTyping = amount !== debouncedAmount;
+  const debouncedInput = useDebouncedValue(input, DEBOUNCE_MS);
+  const isTyping = input.amount !== debouncedInput.amount;
+
+  const request =
+    debouncedInput.side === 'from'
+      ? { from, to, amount: Number(debouncedInput.amount) }
+      : { from: to, to: from, amount: Number(debouncedInput.amount) };
+
+  const conversion = useConversion(request);
+
+  const converted = isTyping || conversion.value === null ? '' : conversion.value.toFixed(2);
+  const fromAmount = input.side === 'from' ? input.amount : converted;
+  const toAmount = input.side === 'to' ? input.amount : converted;
 
   function swapCurrencies() {
     setFrom(to);
@@ -36,7 +47,18 @@ function CurrencyConverter() {
 
   return (
     <form className="converter" onSubmit={(event) => event.preventDefault()}>
-      <AmountInput id="amount" label="Amount" value={amount} onChange={setAmount} />
+      <AmountInput
+        id="from-amount"
+        label={`Amount in ${from}`}
+        value={fromAmount}
+        onChange={(amount) => setInput({ amount, side: 'from' })}
+      />
+      <AmountInput
+        id="to-amount"
+        label={`Amount in ${to}`}
+        value={toAmount}
+        onChange={(amount) => setInput({ amount, side: 'to' })}
+      />
 
       <div className="converter__currencies">
         <CurrencySelect
@@ -66,9 +88,9 @@ function CurrencyConverter() {
       </div>
 
       <ConversionResult
-        amount={Number(amount)}
-        from={from}
-        to={to}
+        amount={Number(input.amount)}
+        from={request.from}
+        to={request.to}
         value={conversion.value}
         isLoading={currenciesLoading || isTyping || conversion.isLoading}
         error={conversion.error}
