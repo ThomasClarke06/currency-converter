@@ -1,4 +1,4 @@
-import type { ConversionRequest, Currency } from '../types';
+import type { Conversion, ConversionRequest, Currency } from '../types';
 
 const BASE_URL = '/api/v1';
 const API_KEY = import.meta.env.VITE_CURRENCY_BEACON_API_KEY;
@@ -15,6 +15,7 @@ interface ApiCurrency {
 
 interface ApiConversion {
   value: number;
+  date: string;
 }
 
 async function request<T>(endpoint: string, params: Record<string, string> = {}): Promise<T> {
@@ -34,7 +35,7 @@ export async function getCurrencies(): Promise<Currency[]> {
   return currencies.map(({ short_code, name }) => ({ code: short_code, name }));
 }
 
-export async function convertCurrency({ from, to, amount }: ConversionRequest): Promise<number> {
+export async function convertCurrency({ from, to, amount }: ConversionRequest): Promise<Conversion> {
   const result = await request<ApiConversion>('convert', { from, to, amount: String(amount) });
-  return result.value;
+  return { value: result.value, date: result.date };
 }

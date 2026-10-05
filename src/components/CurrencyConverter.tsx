@@ -70,6 +70,7 @@ function CurrencyConverter() {
         from={from}
         to={to}
         value={conversion.value}
+        date={conversion.date}
         isLoading={currenciesLoading || isTyping || conversion.isLoading}
         error={conversion.error}
       />

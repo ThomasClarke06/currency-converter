@@ -10,7 +10,7 @@ it('converts the entered amount', async () => {
     { code: 'GBP', name: 'Pound Sterling' },
     { code: 'USD', name: 'US Dollar' },
   ]);
-  vi.mocked(convertCurrency).mockResolvedValue(26.44);
+   vi.mocked(convertCurrency).mockResolvedValue({ value: 26.44, date: '2026-09-29' });
 
   render(<CurrencyConverter />);
   fireEvent.change(screen.getByLabelText('Amount'), { target: { value: '20' } });

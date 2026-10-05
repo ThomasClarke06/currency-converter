@@ -8,3 +8,8 @@ export interface ConversionRequest {
   to: string;
   amount: number;
 }
+
+export interface Conversion {
+  value: number;
+  date: string;
+}

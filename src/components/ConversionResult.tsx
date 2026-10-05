@@ -5,13 +5,26 @@ interface ConversionResultProps {
   from: string;
   to: string;
   value: number | null;
+  date: string | null;
   isLoading: boolean;
   error: string | null;
 }
 
-function ConversionResult({ amount, from, to, value, isLoading, error }: ConversionResultProps) {
+function ConversionResult({
+  amount,
+  from,
+  to,
+  value,
+  date,
+  isLoading,
+  error,
+}: ConversionResultProps) {
   if (error) {
-    return <p className="result result--error" role="alert">{error}</p>;
+    return (
+      <p className="result result--error" role="alert">
+        {error}
+      </p>
+    );
   }
 
   if (!(amount > 0)) {
@@ -30,6 +43,12 @@ function ConversionResult({ amount, from, to, value, isLoading, error }: Convers
       <span className="result__to">
         {formatNumber(value)} {to}
       </span>
+      {date && (
+        <span className="result__date">
+          Updated{' '}
+          {new Date(date).toLocaleDateString(undefined, { dateStyle: 'medium', timeZone: 'UTC' })}
+        </span>
+      )}
     </p>
   );
 }
