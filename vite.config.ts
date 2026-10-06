@@ -1,5 +1,5 @@
 import react from '@vitejs/plugin-react'
-import { defineConfig } from 'vitest/config'
+import { configDefaults, defineConfig } from 'vitest/config'
 
 // CurrencyBeacon doesn't send CORS headers, so browser requests are proxied
 // through the Vite dev server: /api/v1/... -> https://api.currencybeacon.com/v1/...
@@ -16,5 +16,5 @@ export default defineConfig({
   plugins: [react()],
   server: { port: 3000, proxy: apiProxy },
   preview: { proxy: apiProxy },
-  test: { environment: 'jsdom' },
+    test: { environment: 'jsdom', exclude: [...configDefaults.exclude, 'e2e/**'] },
 })
