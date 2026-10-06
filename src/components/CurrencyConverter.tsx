@@ -1,25 +1,48 @@
-import { useState } from 'react';
-import { useCurrencies } from '../hooks/useCurrencies';
-import { useConversion } from '../hooks/useConversion';
-import { useDebouncedValue } from '../hooks/useDebouncedValue';
-import AmountInput from './AmountInput';
-import CurrencySelect from './CurrencySelect';
-import ConversionResult from './ConversionResult';
+import { useState } from "react";
+import { useCurrencies } from "../hooks/useCurrencies";
+import { useConversion } from "../hooks/useConversion";
+import { useDebouncedValue } from "../hooks/useDebouncedValue";
+import AmountInput from "./AmountInput";
+import CurrencySelect from "./CurrencySelect";
+import ConversionResult from "./ConversionResult";
+import ConversionHistory from "./ConversionHistory";
+import type { SavedConversion } from "../types";
 
-const DEFAULT_FROM = 'GBP';
-const DEFAULT_TO = 'USD';
+const DEFAULT_FROM = "GBP";
+const DEFAULT_TO = "USD";
 const DEBOUNCE_MS = 400;
 
 function CurrencyConverter() {
-  const [amount, setAmount] = useState('1');
+  const [amount, setAmount] = useState("1");
   const [from, setFrom] = useState(DEFAULT_FROM);
   const [to, setTo] = useState(DEFAULT_TO);
+  const [history, setHistory] = useState<SavedConversion[]>([]);
 
-  const { currencies, isLoading: currenciesLoading, error: currenciesError } = useCurrencies();
+  const {
+    currencies,
+    isLoading: currenciesLoading,
+    error: currenciesError,
+  } = useCurrencies();
 
   const debouncedAmount = useDebouncedValue(amount, DEBOUNCE_MS);
-  const conversion = useConversion({ from, to, amount: Number(debouncedAmount) });
+  const conversion = useConversion({
+    from,
+    to,
+    amount: Number(debouncedAmount),
+  });
   const isTyping = amount !== debouncedAmount;
+
+  function saveConversion() {
+    if (conversion.value === null) return;
+    const saved = {
+      id: crypto.randomUUID(),
+      from,
+      to,
+      amount: Number(amount),
+      value: conversion.value,
+    };
+    setHistory((previous) => [saved, ...previous].slice(0, 5));
+  }
 
   function swapCurrencies() {
     setFrom(to);
@@ -36,7 +59,12 @@ function CurrencyConverter() {
 
   return (
     <form className="converter" onSubmit={(event) => event.preventDefault()}>
-      <AmountInput id="amount" label="Amount" value={amount} onChange={setAmount} />
+      <AmountInput
+        id="amount"
+        label="Amount"
+        value={amount}
+        onChange={setAmount}
+      />
 
       <div className="converter__currencies">
         <CurrencySelect
@@ -73,6 +101,14 @@ function CurrencyConverter() {
         isLoading={currenciesLoading || isTyping || conversion.isLoading}
         error={conversion.error}
       />
+      <button
+        type="button"
+        onClick={saveConversion}
+        disabled={isTyping || conversion.value === null}
+      >
+        Save conversion
+      </button>
+      <ConversionHistory items={history} />
     </form>
   );
 }

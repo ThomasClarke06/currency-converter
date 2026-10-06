@@ -8,3 +8,11 @@ export interface ConversionRequest {
   to: string;
   amount: number;
 }
+
+export interface SavedConversion {
+  id: string;
+  from: string;
+  to: string;
+  amount: number;
+  value: number;
+} 
