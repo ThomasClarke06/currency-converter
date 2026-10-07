@@ -30,6 +30,9 @@ function ConversionResult({ amount, from, to, value, isLoading, error }: Convers
       <span className="result__to">
         {formatNumber(value)} {to}
       </span>
+      <span className="rate">
+        1 {from} = {formatNumber(value / amount)} {to}
+      </span>
     </p>
   );
 }
