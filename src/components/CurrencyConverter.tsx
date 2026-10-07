@@ -14,12 +14,16 @@ function CurrencyConverter() {
   const [amount, setAmount] = useState('1');
   const [from, setFrom] = useState(DEFAULT_FROM);
   const [to, setTo] = useState(DEFAULT_TO);
+  const [side, setSide] = useState<'from' | 'to'>('from');
 
   const { currencies, isLoading: currenciesLoading, error: currenciesError } = useCurrencies();
 
   const debouncedAmount = useDebouncedValue(amount, DEBOUNCE_MS);
-  const conversion = useConversion({ from, to, amount: Number(debouncedAmount) });
+  const request = side === 'from' ? { from, to } : { from: to, to: from };
+  const conversion = useConversion({ ...request, amount: Number(debouncedAmount) });
   const isTyping = amount !== debouncedAmount;
+  const converted = isTyping || conversion.value === null ? '' : conversion.value.toFixed(2);
+
 
   function swapCurrencies() {
     setFrom(to);
@@ -36,7 +40,12 @@ function CurrencyConverter() {
 
   return (
     <form className="converter" onSubmit={(event) => event.preventDefault()}>
-      <AmountInput id="amount" label="Amount" value={amount} onChange={setAmount} />
+      <AmountInput id="amount" label="Amount"
+        value={side === 'from' ? amount : converted}
+        onChange={(value) => { setAmount(value); setSide('from'); }} />
+      <AmountInput id="converted" label="Converted amount"
+        value={side === 'to' ? amount : converted}
+        onChange={(value) => { setAmount(value); setSide('to'); }} />
 
       <div className="converter__currencies">
         <CurrencySelect
